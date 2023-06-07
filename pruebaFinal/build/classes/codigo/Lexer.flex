@@ -1,0 +1,61 @@
+package codigo;
+import static codigo.Tokens.*;
+
+%%
+%class Lexer
+%type Tokens
+
+L=[a-zA-Z_]+
+D=[0-9]+
+espacio=[ ,\t,\r]+
+
+%{
+    public String lexeme;
+%}
+
+%%
+
+{espacio}                  {/* Ignorar espacios en blanco */}
+( "//"(.)* )               {/* Ignorar comentarios */}
+( "\n" )                   { return Linea; }
+( "\"" )                   { lexeme = yytext(); return Comillas; }
+( byte|int|char|long|float|double ) { lexeme = yytext(); return T_dato; }
+( String )                 { lexeme = yytext(); return Cadena; }
+( if )                     { lexeme = yytext(); return If; }
+( else )                   { lexeme = yytext(); return Else; }
+( do )                     { lexeme = yytext(); return Do; }
+( while )                  { lexeme = yytext(); return While; }
+( for )                    { lexeme = yytext(); return For; }
+( "=" )                    { lexeme = yytext(); return Igual; }
+( "+" )                    { lexeme = yytext(); return Suma; }
+( "-" )                    { lexeme = yytext(); return Resta; }
+( "*" )                    { lexeme = yytext(); return Multiplicacion; }
+( "/" )                    { lexeme = yytext(); return Division; }
+( "&&" | "||" | "!" | "&" | "|" ) { lexeme = yytext(); return Op_logico; }
+( ">" | "<" | "==" | "!=" | ">=" | "<=" | "<<" | ">>" ) { lexeme = yytext(); return Op_relacional; }
+( "+=" | "-="  | "*=" | "/=" | "%=" ) { lexeme = yytext(); return Op_atribucion; }
+( "++" | "--" )            { lexeme = yytext(); return Op_incremento; }
+( true|false )             { lexeme = yytext(); return Op_booleano; }
+( "(" )                    { lexeme = yytext(); return Parentesis_a; }
+( ")" )                    { lexeme = yytext(); return Parentesis_c; }
+( "{" )                    { lexeme = yytext(); return Llave_a; }
+( "}" )                    { lexeme = yytext(); return Llave_c; }
+( "[" )                    { lexeme = yytext(); return Corchete_a; }
+( "]" )                    { lexeme = yytext(); return Corchete_c; }
+( "main" )                 { lexeme = yytext(); return Main; }
+( ";" )                    { lexeme = yytext(); return P_coma; }
+( "avanzar" )              { lexeme = yytext(); return Avanzar; }
+( "girarDerecha" )         { lexeme = yytext(); return GirarDerecha; }
+( "girarIzquierda" )       { lexeme = yytext(); return GirarIzquierda; }
+( "tomarLapiz" )           { lexeme = yytext(); return TomarLapiz; }
+( "soltarLapiz" )          { lexeme = yytext(); return SoltarLapiz; }
+( "pintarNegro" )          { lexeme = yytext(); return PintarNegro; }
+( "pintarBlanco" )         { lexeme = yytext(); return PintarBlanco; }
+( "mirarNorte" )           { lexeme = yytext(); return MirarNorte; }
+( "mirarSur" )             { lexeme = yytext(); return MirarSur; }
+( "mirarEste" )            { lexeme = yytext(); return MirarEste; }
+( "mirarOeste" )           { lexeme = yytext(); return MirarOeste; }
+{L}({L}|{D})*               { lexeme = yytext(); return Identificador; }
+("(-"{D}+")")|{D}+         { lexeme = yytext(); return Numero; }
+
+.                          { return ERROR; }
